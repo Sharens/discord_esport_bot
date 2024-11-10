@@ -1,0 +1,5 @@
+env
+.python-version
+test*
+config*
+__pycache__
