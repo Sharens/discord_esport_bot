@@ -1,3 +1,5 @@
+from libs.pandascore.pandascore_libs import get_active_match_dict
+
 active_games_template = """
 Na podstawie przesłanego słownika: {games_dict}
 
