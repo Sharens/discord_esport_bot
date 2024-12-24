@@ -1,84 +1,116 @@
 # **Python. Czatbot eSport**
 
-## Wymagania
-- 3.0 Ma zaimplementowane minimum 3 ścieżki (stories)
-- 3.5 Wyświetla listę dostępnych rozgrywek
-- 4.0 Dodaje zawodnika do rozgrywki
-- 4.5 Potwierdza dodanie zawodnika wraz z numerem oraz szczegółami turnieju
-- 5.0 Wywietlenie wszystkich drużyn, stanu rozgrywki oraz wszystkich zawodników w rozgrywce
+Bot Discord służący do śledzenia turniejów CS2 z wykorzystaniem API Pandascore.
 
+## Funkcjonalności i ocenianie
+- **3.0** ✅ Zaimplementowane minimum 3 ścieżki (stories)
+- **3.5** ✅ Wyświetla listę dostępnych rozgrywek
+- **4.0** ✅ Dodaje zawodnika do rozgrywki
+- **4.5** ✅ Potwierdza dodanie zawodnika wraz z numerem oraz szczegółami turnieju
+- **5.0** ✅ Wyświetlenie wszystkich drużyn, stanu rozgrywki oraz wszystkich zawodników w rozgrywce
+
+## Komendy
+- `/active_games` - Wyświetla listę aktualnie trwających lub nadchodzących meczy CS2
+- `/tournament_details [match_or_tournament_id]` - Pokazuje szczegółowe informacje o turnieju
+- `/add_player [tournament_id] [player_name] [team_name]` - Dodaje zawodnika do składu drużyny w turnieju
+- `/tournament_roster [tournament_id]` - Wyświetla pełne składy wszystkich drużyn w turnieju
+
+## Wymagania
+- Python 3.8+
+- discord.py
+- requests
+
+## Konfiguracja
+
+1. Utwórz plik `.env` w głównym katalogu projektu:
+```
+DISCORD_TOKEN=twój_token_discord
+PANDASCORE_TOKEN=twój_token_pandascore
+PANDASCORE_BASE_URL=https://api.pandascore.co
+```
+
+2. Zainstaluj wymagane zależności:
+```
+pip install -r requirements.txt
+```
+
+## Uruchomienie
+```
+python bot/client.py
+```
+
+## Struktura projektu
+```
+├── bot/
+│   └── client.py           # Główny plik bota
+├── libs/
+│   ├── config.py          # Konfiguracja
+│   └── pandascore/
+│       └── pandascore_libs.py  # Integracja z API Pandascore
+├── .env                   # Plik z zmiennymi środowiskowymi
+├── README.md
+└── requirements.txt
+```
 
 # Opis danych API Pandascore
 
-Dane, które zwraca API Pandascore, dotyczą wyników, szczegółów i informacji o wydarzeniach e-sportowych, takich jak mecze w różnych turniejach. Poniżej znajduje się przykładowa struktura danych, która jest zwracana przez API:
+Dane zwracane przez API Pandascore dotyczą wyników, szczegółów i informacji o wydarzeniach e-sportowych. Poniżej znajduje się struktura danych zwracanych przez API:
 
 ## Główne elementy odpowiedzi
 
 ### 1. **id**  
-ID turnieju lub wydarzenia e-sportowego. W przykładzie: `14942`.
+ID turnieju lub wydarzenia e-sportowego.
 
 ### 2. **name**  
-Nazwa turnieju lub wydarzenia. W przykładzie: `"Playoffs"`.
+Nazwa turnieju lub wydarzenia.
 
 ### 3. **matches**  
-Lista meczów w ramach danego turnieju. Każdy mecz zawiera szczegóły dotyczące drużyn, statusu, czasu rozpoczęcia i zakończenia itp.
-
-#### Przykład obiektu meczu:
+Lista meczów w ramach danego turnieju. Każdy mecz zawiera:
 - **id**: ID meczu
-- **name**: Nazwa meczu (np. `"Quarterfinals match 1: VER vs ROYALS"`)
+- **name**: Nazwa meczu
 - **status**: Status meczu (np. `"not_started"`, `"in_progress"`, `"completed"`)
-- **live**: Informacje o transmisji na żywo:
-  - `supported`: Czy transmisja na żywo jest obsługiwana (true/false)
-  - `url`: Link do transmisji
-  - `opens_at`: Czas otwarcia transmisji
-- **begin_at**: Czas rozpoczęcia meczu (w formacie ISO 8601)
-- **streams_list**: Lista dostępnych transmisji (linki do streamów)
+- **live**: Informacje o transmisji na żywo
+- **begin_at**: Czas rozpoczęcia meczu
+- **streams_list**: Lista dostępnych transmisji
 
 ### 4. **teams**  
-Lista drużyn biorących udział w turnieju. Każda drużyna zawiera:
+Lista drużyn biorących udział w turnieju, zawierająca:
 - **id**: ID drużyny
 - **name**: Nazwa drużyny
 - **location**: Kraj drużyny
-- **slug**: Unikalny identyfikator drużyny w systemie API
 - **acronym**: Akronim drużyny
-- **image_url**: Link do obrazu drużyny (jeśli dostępny)
+- **image_url**: Link do obrazu drużyny
 
 ### 5. **serie**  
-Szczegóły dotyczące serii, do której należy turniej. Zawiera:
+Szczegóły dotyczące serii turniejowej:
 - **id**: ID serii
-- **name**: Nazwa serii (np. `"Division 1"`)
-- **year**: Rok rozgrywania serii
-- **begin_at**: Czas rozpoczęcia serii
-- **end_at**: Czas zakończenia serii
+- **name**: Nazwa serii
+- **year**: Rok rozgrywania
+- **begin_at**: Czas rozpoczęcia
+- **end_at**: Czas zakończenia
 
 ### 6. **videogame**  
-Informacje o grze, która jest rozgrywana w ramach turnieju. Przykładowo:
+Informacje o rozgrywanej grze:
 - **id**: ID gry
-- **name**: Nazwa gry (np. `"Counter-Strike"`)
-- **slug**: Unikalny identyfikator gry
+- **name**: Nazwa gry
+- **slug**: Unikalny identyfikator
 
 ### 7. **league**  
-Szczegóły dotyczące ligi, w której odbywa się turniej:
+Szczegóły ligi:
 - **id**: ID ligi
-- **name**: Nazwa ligi (np. `"UKIC"`)
-- **url**: Link do strony ligi
-- **image_url**: Link do obrazu ligi (jeśli dostępny)
+- **name**: Nazwa ligi
+- **url**: Link do strony
+- **image_url**: Link do obrazu
 
 ### 8. **prizepool**  
-Nagroda finansowa w turnieju. Przykład: `"2500 British Pound"`.
+Pula nagród w turnieju.
 
 ### 9. **expected_roster**  
-Lista oczekiwanych drużyn i graczy, którzy wezmą udział w turnieju, wraz z ich danymi:
-- **team**: Drużyna
-  - **id**: ID drużyny
-  - **name**: Nazwa drużyny
-  - **image_url**: Link do obrazu drużyny
-- **players**: Lista graczy w drużynie, zawierająca:
-  - **id**: ID gracza
-  - **name**: Imię i nazwisko gracza
-  - **role**: Rola gracza w drużynie
-  - **nationality**: Kraj pochodzenia gracza
-  - **image_url**: Link do obrazu gracza (jeśli dostępny)
+Lista oczekiwanych drużyn i graczy:
+- **team**: Informacje o drużynie
+- **players**: Lista graczy z ich danymi (ID, imię, rola, narodowość)
+
+## Diagram struktury danych
 
 ```mermaid
 classDiagram
